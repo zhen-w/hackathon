@@ -39,33 +39,32 @@
             z-index: 1;
         }
     </style>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
 </head>
 
 <body>
 <div id="time-line">
-    <span id="monthCtrl">Month: 1</span>
-    <input type="range" id="sliderBar" min="1" max="12" step="1" value="0" onChange="showValue(this.value);"/>
+    <span id="month">Month: 1</span>
+    <input type="range" id="timeCtrl" min="1" max="12" step="1" value="0"/>
 </div>
 <div id="product-line">
     <label>Product: </label>
-    <select>
+    <select id="productCtrl">
         <option value="Office">Office</option>
         <option value="Windows">Windows</option>
-        <option value="MS SQL Server">SQL Server</option>
-        <option value="Azure">Azure</option>
     </select>
 </div>
 <div id="map"></div>
 <script>
 
     var map, heatmap;
+    var allData;
+    var currentProduct = "Office", currentMonth = 1;
 
     function initMap() {
         var sanFrancisco = new google.maps.LatLng(37.774546, -122.433523);
         map = new google.maps.Map(document.getElementById('map'), {
             zoom: 13,
-            minZoom: 13,
-            maxZoom: 14,
             center: sanFrancisco,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             streetViewControl: false,
@@ -107,9 +106,33 @@
         });
     }
 
-    function showValue(value){
-        document.getElementById("monthCtrl").innerHTML = "Month: " + value;
+    function updateMapData(){
+        var mapData = allData.map(function(p){
+            var loc = new google.maps.LatLng(p.coordinate.lat, p.coordinate.lng);
+            var weight = p.products[currentProduct]["amounts"][currentMonth - 1];
+            return {
+                location : loc,
+                weight : weight
+            }
+        });
+
+        heatmap.setData(mapData);
     }
+
+    $(document).ready(function(){
+        $.getJSON("testdata/invoice.json", function(data){
+            allData = data;
+        });
+        $("#productCtrl").change(function(){
+            currentProduct = $(this).val();
+            updateMapData()
+        })
+        $("#timeCtrl").change(function(){
+            currentMonth = $(this).val();
+            $("#month").html("Month: " + currentMonth);
+            updateMapData()
+        })
+    })
 
 
 </script>
