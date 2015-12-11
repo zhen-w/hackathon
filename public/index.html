@@ -74,31 +74,85 @@
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById("time-line"));
         map.controls[google.maps.ControlPosition.LEFT_CENTER].push(document.getElementById("product-line"));
 
-        map.addListener('zoom_changed', function() {
-            var zoomNumber = map.getZoom();
-            console.log(zoomNumber)
-            if( zoomNumber == 13){
-                //City Level
-            }else if( zoomNumber == 14){
-                //State Level
-            }
-        });
-        var heatMapData = [
-            {location: new google.maps.LatLng(37.782, -122.447), weight: 0.5},
-            new google.maps.LatLng(37.782, -122.445), // default weight is 1
-            {location: new google.maps.LatLng(37.782, -122.443), weight: 2},
-            {location: new google.maps.LatLng(37.782, -122.441), weight: 3},
-            {location: new google.maps.LatLng(37.782, -122.439), weight: 2},
-            new google.maps.LatLng(37.782, -122.437),
-            {location: new google.maps.LatLng(37.782, -122.435), weight: 0.5},
+       
+            var heatMapData = [
 
-            {location: new google.maps.LatLng(37.785, -122.447), weight: 3},
-            {location: new google.maps.LatLng(37.785, -122.445), weight: 2},
-            new google.maps.LatLng(37.785, -122.443),
-            {location: new google.maps.LatLng(37.785, -122.441), weight: 0.5},
-            new google.maps.LatLng(37.785, -122.439),
-            {location: new google.maps.LatLng(37.785, -122.437), weight: 2},
-            {location: new google.maps.LatLng(37.785, -122.435), weight: 3}
+		    //SF
+            new google.maps.LatLng(37.782, -122.447),
+            new google.maps.LatLng(37.782, -122.445), // default weight is 1
+            new google.maps.LatLng(37.782, -122.443),
+            new google.maps.LatLng(37.782, -122.441),
+            new google.maps.LatLng(37.782, -122.439),
+            new google.maps.LatLng(37.782, -122.437),
+            new google.maps.LatLng(37.782, -122.435),
+	    new google.maps.LatLng(37.765, -122.447),
+            new google.maps.LatLng(37.765, -122.445), 
+            new google.maps.LatLng(37.765, -122.443),
+            new google.maps.LatLng(37.765, -122.441),
+            new google.maps.LatLng(37.765, -122.439),
+            new google.maps.LatLng(37.765, -122.437),
+		new google.maps.LatLng(37.765, -122.435),
+
+		//diagonal SF
+		new google.maps.LatLng(37.780, -122.437),
+		new google.maps.LatLng(37.777, -122.439),
+		new google.maps.LatLng(37.774, -122.441),
+		new google.maps.LatLng(37.771, -122.443),
+		    new google.maps.LatLng(37.768, -122.445),
+
+		    //US
+		    
+		    {location: new google.maps.LatLng(47, -114), weight:200},
+		    {location: new google.maps.LatLng(47, -113), weight:200},
+		    {location: new google.maps.LatLng(47, -112), weight:200},
+		    {location: new google.maps.LatLng(47, -111), weight:200},
+		    {location: new google.maps.LatLng(47, -110), weight:200},
+		    {location: new google.maps.LatLng(47, -109), weight:200},
+		    {location: new google.maps.LatLng(47, -108), weight:200},
+		    {location: new google.maps.LatLng(47, -107), weight:200},
+		    {location: new google.maps.LatLng(47, -106), weight:200},
+		    {location: new google.maps.LatLng(47, -105), weight:200},
+		    {location: new google.maps.LatLng(47, -104), weight:200},
+		    {location: new google.maps.LatLng(47, -103), weight:200},
+		    {location: new google.maps.LatLng(47, -102), weight:200},
+		    {location: new google.maps.LatLng(47, -101), weight:200},
+		    {location: new google.maps.LatLng(47, -100), weight:200},
+		    {location: new google.maps.LatLng(47, -99), weight:200},
+		    {location: new google.maps.LatLng(47, -98), weight:200},
+		    {location: new google.maps.LatLng(46, -99), weight:200},
+		    {location: new google.maps.LatLng(45.5, -100), weight:200},
+		    {location: new google.maps.LatLng(45, -101), weight:200},
+		    {location: new google.maps.LatLng(44, -102), weight:200},
+		    {location: new google.maps.LatLng(43.5, -103), weight:200},
+		    {location: new google.maps.LatLng(43, -104), weight:200},
+		    {location: new google.maps.LatLng(42, -105), weight:200},
+		    {location: new google.maps.LatLng(41.5, -106), weight:200},
+		    {location: new google.maps.LatLng(41, -107), weight:200},
+		    {location: new google.maps.LatLng(40, -108), weight:200},
+		    {location: new google.maps.LatLng(39.5, -109), weight:200},
+		    {location: new google.maps.LatLng(39, -110), weight:200},
+		    {location: new google.maps.LatLng(38, -111), weight:200},
+		    {location: new google.maps.LatLng(37.5, -112), weight:200},
+		    {location: new google.maps.LatLng(36, -113), weight:200},
+		    {location: new google.maps.LatLng(35, -114), weight:200},
+		    {location: new google.maps.LatLng(35, -113), weight:200},
+		    {location: new google.maps.LatLng(35, -112), weight:200},
+		    {location: new google.maps.LatLng(35, -111), weight:200},
+		    {location: new google.maps.LatLng(35, -110), weight:200},
+		    {location: new google.maps.LatLng(35, -109), weight:200},
+		    {location: new google.maps.LatLng(35, -108), weight:200},
+		    {location: new google.maps.LatLng(35, -107), weight:200},
+		    {location: new google.maps.LatLng(35, -106), weight:200},
+		    {location: new google.maps.LatLng(35, -105), weight:200},
+		    {location: new google.maps.LatLng(35, -104), weight:200},
+		    {location: new google.maps.LatLng(35, -103), weight:200},
+		    {location: new google.maps.LatLng(35, -102), weight:200},
+		    {location: new google.maps.LatLng(35, -101), weight:200},
+		    {location: new google.maps.LatLng(35, -100), weight:200},
+		    {location: new google.maps.LatLng(35, -99), weight:200},
+		    {location: new google.maps.LatLng(35, -98), weight:200}
+
+			
         ];
         heatmap = new google.maps.visualization.HeatmapLayer({
             data: heatMapData,
@@ -109,7 +163,9 @@
     function updateMapData(){
         var mapData = allData.map(function(p){
             var loc = new google.maps.LatLng(p.coordinate.lat, p.coordinate.lng);
-            var weight = p.products[currentProduct]["amounts"][currentMonth - 1];
+		var weight = p.products.filter(function(prod){
+			return prod.name == currentProduct; 
+		})[0]["amounts"][currentMonth - 1];
             return {
                 location : loc,
                 weight : weight
@@ -120,7 +176,7 @@
     }
 
     $(document).ready(function(){
-        $.getJSON("testdata/invoice.json", function(data){
+        $.getJSON("testdata/sf.json", function(data){
             allData = data;
         });
         $("#productCtrl").change(function(){
@@ -137,7 +193,7 @@
 
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWCwAb7V9Hw4-ZUExp6EA0gJBHilBW_NM&signed_in=true&libraries=visualization&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA60KhSNulq-LhqKxvtQTlNTiilyythzL8&signed_in=true&libraries=visualization&callback=initMap">
 </script>
 </body>
 </html>
