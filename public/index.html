@@ -74,29 +74,24 @@
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById("time-line"));
         map.controls[google.maps.ControlPosition.LEFT_CENTER].push(document.getElementById("product-line"));
 
-       
-            var heatMapData = [
-
-
-			
-        ];
         heatmap = new google.maps.visualization.HeatmapLayer({
-            data: heatMapData,
+//            data: heatMapData,
             map: map
         });
+        updateMapData()
     }
 
     function updateMapData(){
         var mapData = allData.map(function(p){
             var loc = new google.maps.LatLng(p.coordinate.lat, p.coordinate.lng);
-		var weight = p.products.filter(function(prod){
-			return prod.name == currentProduct; 
-		})[0]["amounts"][currentMonth - 1];
-            return {
-                location : loc,
-                weight : weight
-            }
-        });
+            var weight = p.products.filter(function(prod){
+                return prod.name == currentProduct;
+            })[0]["amounts"][currentMonth - 1];
+                return {
+                    location : loc,
+                    weight : weight
+                }
+            });
 
         heatmap.setData(mapData);
     }
