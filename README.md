@@ -8,3 +8,6 @@
      ~$ npm install
 public$ bower install
      ~$ DEBUG=hackathon:* npm start
+
+### Demo
+     Drag and drop sf.json to the top-center of the map.

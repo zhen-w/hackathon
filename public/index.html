@@ -2,7 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0" />
     <title>Heatmaps</title>
+
     <style>
         html, body {
             height: 100%;
@@ -28,7 +30,7 @@
             width: 100%;
         }
 
-        #product-line{
+        #product-line, #test-data{
             padding: 3px 5px;
             background-color : #fff;
             border : 2px solid #fff;
@@ -38,6 +40,26 @@
             width: 135px;
             z-index: 1;
         }
+        #drop-container {
+            display: none;
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            z-index: 1;
+            top: 0px;
+            left: 0px;
+            padding: 20px;
+            background-color: rgba(100, 100, 100, 0.5);
+      }
+      #drop-silhouette {
+            color: white;
+            border: white dashed 8px;
+            height: calc(100% - 56px);
+            width: calc(100% - 56px);
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAAAXNSR0IArs4c6QAAAAZiS0dEAGQAZABkkPCsTwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB90LHAIvICWdsKwAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACdklEQVR42u3csU7icBzA8Xp3GBMSeRITH8JHMY7cRMvmVmXoE9TAcJubhjD4ApoiopgqDMWAKAgIcSAiCfxuwhwROVJbkPD9rP23ob8vpZCQKgoAAAAAAAAAAPDYyiK/eNM05bNtr6+vSjgcXiHxDMkE1WpVFvGcfpCVICAIQUAQgoAgBAFBCAKCgCAEAUEIAoIQBAQhCAgCghAEBCEICEIQEIQgIAgIQhAQhCAgCEFAEIKAICAIQUAQgoAgBAFBCDIzhmFINBo9/K6D0XVddnd3ZaneDY7jSCqVcn3SfjyeKRKJbJ2dnYllWbKUl2i5XJaXlxdJJBIy7yDHx8fy9vYm6XR6OWMM3d/fi4hIqVSSWCwmsw5ycHAgrVZLRETOz8+XO8ZQpVJ5H2Y6nRZN0/b9DqLruhSLxfd9MpkMMT6L0uv1JJlMih9BhveJwWDwvv7i4oIY4zw8PIwMtt1uSzweF6+CHB0dSbfbHVmbzWaJMcnj4+OHAd/d3cne3p64DWKapjw/P39Yd3l5SYxpVKvVsYO2LEtUVd2ZNoiu6+I4ztg1V1dXxPAiSq/Xk5OTk0k9pNVqyenp6ch94l+5XI4YbtRqNfHa9fX1t43xcwGa/Nnc3PwdDAY9OZht28rGxgZPvP6KSCSy9fT09OUrw7ZtPqa8jFKv113HuLm5IYbXVFXdcRPl9vaWGH5GaTQaU8fI5/PE8JumafvNZvO/MQqFAjFmJRqNHk6Ksqgx5vr1zzAM2d7edr3/6uqqsra2NnZbp9NR+v2+62OHQqG5zObXPIMEAgFlfX3dl2N79btl1viTA0FAEIKAIAQBAAAAAAAAsMz+Ai1bUgo6ebm8AAAAAElFTkSuQmCC');
+            background-repeat: no-repeat;
+            background-position: center;
+      }
     </style>
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
 </head>
@@ -55,6 +77,7 @@
     </select>
 </div>
 <div id="map"></div>
+<div id="drop-container"><div id="drop-silhouette"></div></div>
 <script>
 
     var map, heatmap;
@@ -73,14 +96,10 @@
 
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById("time-line"));
         map.controls[google.maps.ControlPosition.LEFT_CENTER].push(document.getElementById("product-line"));
+        map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById("test-data"));
 
         heatmap = new google.maps.visualization.HeatmapLayer({
             map: map
-        });
-
-        $.getJSON("testdata/sf.json", function(data){
-            allData = data;
-            updateMapData();
         });
 
         zuora = [
@@ -136,6 +155,76 @@
         ]
     }
 
+    function loadGeoJsonString(geoString) {
+        var geojson = JSON.parse(geoString);
+        allData = geojson;
+        updateMapData();
+    }
+
+    /* DOM (drag/drop) functions */
+
+    function initEvents() {
+      // set up the drag & drop events
+      var mapContainer = document.getElementById('map');
+      var dropContainer = document.getElementById('drop-container');
+
+      // map-specific events
+      mapContainer.addEventListener('dragenter', showPanel, false);
+
+      // overlay specific events (since it only appears once drag starts)
+      dropContainer.addEventListener('dragover', showPanel, false);
+      dropContainer.addEventListener('drop', handleDrop, false);
+      dropContainer.addEventListener('dragleave', hidePanel, false);
+    }
+
+    function showPanel(e) {
+      e.stopPropagation();
+      e.preventDefault();
+      document.getElementById('drop-container').style.display = 'block';
+      return false;
+    }
+
+    function hidePanel(e) {
+      document.getElementById('drop-container').style.display = 'none';
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      hidePanel(e);
+
+      var files = e.dataTransfer.files;
+      if (files.length) {
+        // process file(s) being dropped
+        // grab the file data from each file
+        for (var i = 0, file; file = files[i]; i++) {
+          var reader = new FileReader();
+          reader.onload = function(e) {
+            loadGeoJsonString(e.target.result);
+          };
+          reader.onerror = function(e) {
+            console.error('reading failed');
+          };
+          reader.readAsText(file);
+        }
+      } else {
+        // process non-file (e.g. text or html) content being dropped
+        // grab the plain text version of the data
+        var plainText = e.dataTransfer.getData('text/plain');
+        if (plainText) {
+          loadGeoJsonString(plainText);
+        }
+      }
+
+      // prevent drag event from bubbling further
+      return false;
+    }
+
+
+    function initialize() {
+      initMap();
+      initEvents();
+    }
     function updateMapData(){
         if( currentMonth == 12 ){
             heatmap.setData(zuora);
@@ -170,7 +259,7 @@
 
 </script>
 <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA60KhSNulq-LhqKxvtQTlNTiilyythzL8&signed_in=true&libraries=visualization&callback=initMap">
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA60KhSNulq-LhqKxvtQTlNTiilyythzL8&signed_in=true&libraries=visualization&callback=initialize">
 </script>
 </body>
 </html>
