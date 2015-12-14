@@ -16,6 +16,7 @@
         }
 
         #time-line {
+            visibility: hidden;
             padding: 3px 5px;
             background-color : #fff;
             border : 2px solid #fff;
@@ -30,7 +31,8 @@
             width: 100%;
         }
 
-        #product-line, #test-data{
+        #product-line{
+            visibility: hidden;
             padding: 3px 5px;
             background-color : #fff;
             border : 2px solid #fff;
@@ -97,7 +99,6 @@
 
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(document.getElementById("time-line"));
         map.controls[google.maps.ControlPosition.LEFT_CENTER].push(document.getElementById("product-line"));
-        map.controls[google.maps.ControlPosition.LEFT_TOP].push(document.getElementById("test-data"));
 
         heatmap = new google.maps.visualization.HeatmapLayer({
             map: map
@@ -193,7 +194,8 @@
       e.preventDefault();
       e.stopPropagation();
       hidePanel(e);
-
+        $("#time-line").css("visibility", "visible");
+        $("#product-line").css("visibility", "visible");
       var files = e.dataTransfer.files;
       if (files.length) {
         // process file(s) being dropped
